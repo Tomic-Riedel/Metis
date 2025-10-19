@@ -27,6 +27,17 @@ The metric should return a list of ```metis.utils.result.DQResult```. This can b
 
 **Note:** Each metric has to be imported in the *__init__.py* file inside the folder *metric/* so it is recognized by the Metric registry.
 
+### Metric naming convention
+
+Metrics are organized by dimension (e.g., `completeness`, `minimality`), where one folder exists for each. 
+New metrics should follow the naming format: `{Granularity}_{DimensionName}_{Technique}`
+
+- **Granularity**: The level of analysis (e.g., `cell`, `row`, `column`, `table`)
+- **DimensionName**: The quality dimension being measured (e.g., `Completeness`, `Minimality`)
+- **Technique**: The calculation or method used  (e.g., `MissingRatio`, `HierarchicalClustering`)
+
+Examples: `column_completeness_MissingRatio`, `row_minimality_DuplicateRatio`
+
 ## Output: creating a DQResult
 
 ````python
