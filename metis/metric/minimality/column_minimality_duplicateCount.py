@@ -4,7 +4,7 @@ from typing import List, Union
 from metis.utils.result import DQResult
 from metis.metric.metric import Metric
 
-class AttributeUniqueness(Metric):
+class column_minimality_duplicateCount(Metric):
     def assess(self, data: pd.DataFrame, reference: Union[pd.DataFrame, None] = None, metric_config: Union[str, None] = None) -> List[DQResult]:
         """
         Assess the uniqueness for each attribute of a dataset by checking for unique values. 
@@ -29,8 +29,8 @@ class AttributeUniqueness(Metric):
             result = DQResult(
                 mesTime=pd.Timestamp.now(),
                 DQvalue=uniqueness,
-                DQdimension="AttributeUniqueness",
-                DQmetric="AttributeUniqueness",
+                DQdimension="Minimality",
+                DQmetric="Column_Minimality_DuplicateCount",
                 columnNames=[column],
                 DQannotations=annotations
             )
