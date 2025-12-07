@@ -5,6 +5,6 @@ orchestrator = DQOrchestrator(writer_config_path="configs/writer/sqlite.json")
 
 orchestrator.load(data_loader_configs=["data/adult.json"])
 
-orchestrator.assess(metrics=["Completeness"], metric_configs=[None])
-orchestrator.assess(metrics=["AttributeUniqueness"], metric_configs=[None])
-orchestrator.assess(metrics=["OutOfVocabulary"], metric_configs=['{"use_nltk": true, "lowercase": true}'])
+orchestrator.assess(metrics=["column_completeness_missingRatio"], metric_configs=[None])
+orchestrator.assess(metrics=["column_minimality_duplicateCount"], metric_configs=[None])
+orchestrator.assess(metrics=["column_validity_outOfVocabulary"], metric_configs=['{"use_nltk": true, "lowercase": true}'])

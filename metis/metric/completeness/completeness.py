@@ -4,7 +4,7 @@ from typing import List, Union
 from metis.utils.result import DQResult
 from metis.metric.metric import Metric
 
-class Completeness(Metric):
+class column_completeness_missingRatio(Metric):
     def assess(self, data: pd.DataFrame, reference: Union[pd.DataFrame, None] = None, metric_config: Union[str, None] = None) -> List[DQResult]:
         """
         Assess the completeness of the data by checking for missing values.
@@ -24,7 +24,7 @@ class Completeness(Metric):
                 mesTime=pd.Timestamp.now(),
                 DQvalue=completeness,
                 DQdimension="Completeness",
-                DQmetric="Completeness",
+                DQmetric="Column_Completeness_MissingRatio",
                 columnNames=[column],
             )
             results.append(result)

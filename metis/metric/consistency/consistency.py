@@ -5,7 +5,7 @@ import json
 from metis.utils.result import DQResult
 from metis.metric.metric import Metric
 
-class Consistency(Metric):
+class table_consistency_functionalDependency(Metric):
     def assess(self, data: pd.DataFrame, reference: Union[pd.DataFrame, None] = None, metric_config: Union[str, None] = None) -> List[DQResult]:
         """
         Assess the consistency of a dataset by checking the compliance of a functional dependency specified in the metric_config.
@@ -43,7 +43,7 @@ class Consistency(Metric):
                 mesTime=pd.Timestamp.now(),
                 DQvalue=consistency,
                 DQdimension="Consistency",
-                DQmetric="Consistency",
+                DQmetric="Table_Consistency_FunctionalDependency",
                 columnNames=[determinant],
                 DQannotations={f"{determinant}:{dependent}":violations} # FD
             )
