@@ -1,5 +1,5 @@
 from .metric import Metric
-from .completeness.completeness_missingRatio import column_completeness_missingRatio
+from .completeness.completeness_nullRatio import column_completeness_nullRatio
 from .consistency.consistency_functionalDependency import table_consistency_functionalDependency
 from .minimality.minimality_duplicateCount import column_minimality_duplicateCount
 from .validity.validity_outOfVocabulary import column_validity_outOfVocabulary
