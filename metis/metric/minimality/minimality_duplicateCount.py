@@ -28,11 +28,12 @@ class minimality_duplicateCount(Metric):
 
             result = DQResult(
                 mesTime=pd.Timestamp.now(),
-                DQvalue=minimality,
                 DQdimension="Minimality",
-                DQmetric="Column_Minimality_DuplicateCount",
+                DQmetric="DuplicateCount",
+                DQgranularity="column",
+                DQvalue=minimality,
+                DQexplanation=annotations,
                 columnNames=[column],
-                DQannotations=annotations
             )
             results.append(result)
         

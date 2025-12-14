@@ -41,11 +41,13 @@ class consistency_countFDViolations(Metric):
 
             result = DQResult(
                 mesTime=pd.Timestamp.now(),
-                DQvalue=consistency,
                 DQdimension="Consistency",
-                DQmetric="Table_Consistency_CountFDViolations",
+                DQmetric="CountFDViolations",
+                DQgranularity="table",
+                DQvalue=consistency,
+                DQexplanation={f"{determinant}:{dependent}": violations},  # FD
                 columnNames=[determinant],
-                DQannotations={f"{determinant}:{dependent}": violations},  # FD
+                configJson=metric_conf
             )
             results.append(result)
 

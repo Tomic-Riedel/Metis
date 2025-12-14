@@ -63,11 +63,12 @@ class validity_outOfVocabulary(Metric):
 
             result = DQResult(
                 mesTime=pd.Timestamp.now(),
-                DQvalue=dq_value,
                 DQdimension="Validity",
-                DQmetric="Column_Validity_OutOfVocabulary",
+                DQmetric="OutOfVocabulary",
+                DQgranularity="column",
+                DQvalue=dq_value,
+                DQexplanation=annotations,
                 columnNames=[column],
-                DQannotations=annotations,
             )
             results.append(result)
 

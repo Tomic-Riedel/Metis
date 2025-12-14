@@ -22,9 +22,10 @@ class completeness_nullRatio(Metric):
             
             result = DQResult(
                 mesTime=pd.Timestamp.now(),
-                DQvalue=completeness,
                 DQdimension="Completeness",
-                DQmetric="Column_Completeness_NullRatio",
+                DQmetric="NullRatio",
+                DQgranularity="column",
+                DQvalue=completeness,
                 columnNames=[column],
             )
             results.append(result)
