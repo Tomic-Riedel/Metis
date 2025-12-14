@@ -4,7 +4,7 @@ from typing import List, Union
 from metis.utils.result import DQResult
 from metis.metric.metric import Metric
 
-class column_completeness_nullRatio(Metric):
+class completeness_nullRatio(Metric):
     def assess(self, data: pd.DataFrame, reference: Union[pd.DataFrame, None] = None, metric_config: Union[str, None] = None) -> List[DQResult]:
         """
         Assess the completeness of the data by checking for null values.

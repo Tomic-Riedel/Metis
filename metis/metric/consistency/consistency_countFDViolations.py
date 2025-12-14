@@ -5,7 +5,7 @@ import json
 from metis.utils.result import DQResult
 from metis.metric.metric import Metric
 
-class table_consistency_countFDViolations(Metric):
+class consistency_countFDViolations(Metric):
     def assess(self, data: pd.DataFrame, reference: Union[pd.DataFrame, None] = None, metric_config: Union[str, None] = None) -> List[DQResult]:
         """
         Assess the consistency of a dataset by checking the compliance of a functional dependency specified in the metric_config.
