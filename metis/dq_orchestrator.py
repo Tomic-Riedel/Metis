@@ -55,7 +55,7 @@ class DQOrchestrator:
                         f"Unsupported loader type: {config_data.get('loader', None)}"
                     )
 
-    def assess(self, metrics: List[str], metric_configs: List[str | None], measure_runtime: bool = False) -> None:
+    def assess(self, metrics: List[str], metric_configs: List[str | None]) -> None:
         results = []
 
         for metric, metric_config in zip(metrics, metric_configs):
@@ -64,6 +64,7 @@ class DQOrchestrator:
                 raise ValueError(f"Metric {metric} is not registered.")
             metric_instance: Metric = metric_class()
             for df_name, df in self.dataframes.items():
+                measure_runtime = self._should_measure_runtime(metric_config)
                 if measure_runtime:
                     start = time.perf_counter()
                     incomplete_metric_results = metric_instance.assess(
@@ -89,3 +90,21 @@ class DQOrchestrator:
 
     def get_dq_result(self, query: str) -> List[DQResult]:
         return []
+
+    def _should_measure_runtime(self, metric_config: str | None) -> bool:
+      if metric_config is None:
+          return False
+
+      try:
+          parsed = json.loads(metric_config)
+      except Exception:
+          try:
+              with open(metric_config, "r") as f:
+                  parsed = json.load(f)
+          except Exception:
+              return False
+
+      if not isinstance(parsed, dict):
+          return False
+
+      return bool(parsed.get("measure_runtime", False))
