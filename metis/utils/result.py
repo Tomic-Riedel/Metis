@@ -10,6 +10,7 @@ class DQResult:
             DQgranularity: str,
             DQvalue: float,
             DQexplanation: Union[dict, None] = None,
+            runtime: Union[float, None] = None,
             tableName: Union[str, None] = None,
             columnNames: Union[List[str], None] = None,
             rowIndex: Union[int, None] = None,
@@ -56,6 +57,7 @@ class DQResult:
         self._DQgranularity = DQgranularity
         self._DQvalue = DQvalue
         self._DQexplanation = DQexplanation
+        self._runtime = runtime
         self._tableName = tableName
         self._columnNames = columnNames
         self._rowIndex = rowIndex
@@ -110,6 +112,14 @@ class DQResult:
     @DQexplanation.setter
     def DQexplanation(self, value):
         self._DQexplanation = value
+
+    @property
+    def runtime(self):
+        return self._runtime
+
+    @runtime.setter
+    def runtime(self, value):
+        self._runtime = value
 
     @property
     def tableName(self):
@@ -167,6 +177,7 @@ class DQResult:
             "DQgranularity": self._DQgranularity,
             "DQvalue": self._DQvalue,
             "DQexplanation": self._DQexplanation,
+            "runtime": self._runtime,
             "tableName": self._tableName,
             "columnNames": self._columnNames,
             "rowIndex": self._rowIndex,

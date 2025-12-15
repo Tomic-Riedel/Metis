@@ -2,6 +2,7 @@ import json
 from typing import Dict, List, Type
 
 import pandas as pd
+import time
 
 from metis.loader.csv_loader import CSVLoader
 from metis.metric import Metric
@@ -54,7 +55,7 @@ class DQOrchestrator:
                         f"Unsupported loader type: {config_data.get('loader', None)}"
                     )
 
-    def assess(self, metrics: List[str], metric_configs: List[str | None]) -> None:
+    def assess(self, metrics: List[str], metric_configs: List[str | None], measure_runtime: bool = False) -> None:
         results = []
 
         for metric, metric_config in zip(metrics, metric_configs):
@@ -63,11 +64,22 @@ class DQOrchestrator:
                 raise ValueError(f"Metric {metric} is not registered.")
             metric_instance: Metric = metric_class()
             for df_name, df in self.dataframes.items():
-                incomplete_metric_results = metric_instance.assess(
-                    data=df,
-                    reference=self.reference_dataframes.get(df_name),
-                    metric_config=metric_config,
-                )
+                if measure_runtime:
+                    start = time.perf_counter()
+                    incomplete_metric_results = metric_instance.assess(
+                        data=df,
+                        reference=self.reference_dataframes.get(df_name),
+                        metric_config=metric_config,
+                    )
+                    elapsed = time.perf_counter() - start
+                    for result in incomplete_metric_results:
+                        result.runtime = elapsed
+                else:
+                    incomplete_metric_results = metric_instance.assess(
+                        data=df,
+                        reference=self.reference_dataframes.get(df_name),
+                        metric_config=metric_config,
+                    )
                 for result in incomplete_metric_results:
                     result.tableName = df_name
                     result.dataset = self.data_paths[df_name]
