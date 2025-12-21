@@ -5,7 +5,7 @@ import json
 from metis.utils.result import DQResult
 from metis.metric.metric import Metric
 
-class Consistency(Metric):
+class consistency_countFDViolations(Metric):
     def assess(self, data: pd.DataFrame, reference: Union[pd.DataFrame, None] = None, metric_config: Union[str, None] = None) -> List[DQResult]:
         """
         Assess the consistency of a dataset by checking the compliance of a functional dependency specified in the metric_config.
@@ -25,7 +25,7 @@ class Consistency(Metric):
         for determinant, dependents in metric_conf.items():
             if determinant not in data.columns:
                 continue
-            
+
             for dependent in dependents:
                 if dependent not in data.columns:
                     continue
@@ -36,17 +36,19 @@ class Consistency(Metric):
                 # find groups where there's more than one dependent value
                 # for the same determinant (FD violation)
                 violations = grouped[grouped > 1].index.tolist()
-                
+
             consistency = 1 - (len(violations) / len(data[determinant]))
 
             result = DQResult(
                 mesTime=pd.Timestamp.now(),
-                DQvalue=consistency,
                 DQdimension="Consistency",
-                DQmetric="Consistency",
+                DQmetric="CountFDViolations",
+                DQgranularity="table",
+                DQvalue=consistency,
+                DQexplanation={f"{determinant}:{dependent}": violations},  # FD
                 columnNames=[determinant],
-                DQannotations={f"{determinant}:{dependent}":violations} # FD
+                configJson=metric_conf
             )
             results.append(result)
-        
+
         return results
