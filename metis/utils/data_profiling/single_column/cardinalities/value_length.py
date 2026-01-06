@@ -26,11 +26,11 @@ def value_length_min(data: Union[pd.Series, pd.DataFrame]) -> Union[int, pd.Seri
         lengths = _get_string_lengths(data)
         return int(lengths.min()) if not lengths.empty else 0
     else:
-        result = pd.Series(dtype=int, index=data.columns)
+        result = {}
         for col in data.columns:
             lengths = _get_string_lengths(data[col])
             result[col] = int(lengths.min()) if not lengths.empty else 0
-        return result
+        return pd.Series(result)
 
 
 def value_length_max(data: Union[pd.Series, pd.DataFrame]) -> Union[int, pd.Series]:
@@ -47,11 +47,11 @@ def value_length_max(data: Union[pd.Series, pd.DataFrame]) -> Union[int, pd.Seri
         lengths = _get_string_lengths(data)
         return int(lengths.max()) if not lengths.empty else 0
     else:
-        result = pd.Series(dtype=int, index=data.columns)
+        result = {}
         for col in data.columns:
             lengths = _get_string_lengths(data[col])
             result[col] = int(lengths.max()) if not lengths.empty else 0
-        return result
+        return pd.Series(result)
 
 
 def value_length_mean(data: Union[pd.Series, pd.DataFrame]) -> Union[float, pd.Series]:
@@ -68,11 +68,11 @@ def value_length_mean(data: Union[pd.Series, pd.DataFrame]) -> Union[float, pd.S
         lengths = _get_string_lengths(data)
         return float(lengths.mean()) if not lengths.empty else 0.0
     else:
-        result = pd.Series(dtype=float, index=data.columns)
+        result = {}
         for col in data.columns:
             lengths = _get_string_lengths(data[col])
             result[col] = float(lengths.mean()) if not lengths.empty else 0.0
-        return result
+        return pd.Series(result)
 
 
 def value_length_median(data: Union[pd.Series, pd.DataFrame]) -> Union[float, pd.Series]:
@@ -89,8 +89,8 @@ def value_length_median(data: Union[pd.Series, pd.DataFrame]) -> Union[float, pd
         lengths = _get_string_lengths(data)
         return float(lengths.median()) if not lengths.empty else 0.0
     else:
-        result = pd.Series(dtype=float, index=data.columns)
+        result = {}
         for col in data.columns:
             lengths = _get_string_lengths(data[col])
             result[col] = float(lengths.median()) if not lengths.empty else 0.0
-        return result
+        return pd.Series(result)
