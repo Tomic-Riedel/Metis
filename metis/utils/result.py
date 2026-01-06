@@ -30,6 +30,7 @@ class DQResult:
         Optional arguments
         - `DQexplanation: Optional[dict]`: Arbitrary additional information
             produced by the metric (no fixed schema required).
+        - `runtime: Optional[float]`: Time taken to compute the metric, in seconds.
         - `tableName: Optional[str]`: Table name within the dataset. Also
             typically set by the `metis.dq_orchestrator.DQOrchestrator`.
         - `columnNames: Optional[List[str]]`: Columns that this result pertains to.
