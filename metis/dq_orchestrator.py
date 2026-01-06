@@ -92,19 +92,19 @@ class DQOrchestrator:
         return []
 
     def _should_measure_runtime(self, metric_config: str | None) -> bool:
-      if metric_config is None:
-          return False
+        if metric_config is None:
+            return False
 
-      try:
-          parsed = json.loads(metric_config)
-      except Exception:
-          try:
-              with open(metric_config, "r") as f:
-                  parsed = json.load(f)
-          except Exception:
-              return False
+        try:
+            parsed = json.loads(metric_config)
+        except Exception:
+            try:
+                with open(metric_config, "r") as f:
+                    parsed = json.load(f)
+            except Exception:
+                return False
 
-      if not isinstance(parsed, dict):
-          return False
+        if not isinstance(parsed, dict):
+            return False
 
-      return bool(parsed.get("measure_runtime", False))
+        return bool(parsed.get("measure_runtime", False))
