@@ -35,3 +35,6 @@ from .single_column.summaries_and_sketches.minhash import (
     minhash_signature,
     estimate_jaccard_from_minhash,
 )
+
+from .single_column.domain_classification.data_class import data_class
+from .single_column.domain_classification.domain import domain
