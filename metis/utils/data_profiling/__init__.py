@@ -21,3 +21,8 @@ from .single_column.value_distribution.quartiles import (
     quartiles,
     interquartile_range,
 )
+
+from .single_column.patterns_and_data_types.basic_type import basic_type
+from .single_column.patterns_and_data_types.data_type import data_type
+from .single_column.patterns_and_data_types.numeric_precision import size, decimals
+from .single_column.patterns_and_data_types.patterns import patterns
