@@ -67,5 +67,45 @@ Furthermore, there are more optional arguments that might need to be set dependi
 - **rowIndex: Optional[int]**: Index of the row this result is associated with. This can either be used together with columnNames to assess data quality on a cell level or for row based metrics.
 - **DQannotations: Optional[dict]**: To allow metrics to save additional information or annotations, this dictionary can store all additional information that might need to be saved. This currently does not need for follow a predefined structure.
 
+## Data Profiling
 
+Metis includes a data profiling system that caches computed statistics and supports importing pre-computed profiles.
+
+### Cached Profiling Functions
+
+Use cached profiling functions from `metis.profiling` for automatic caching:
+
+```python
+from metis.profiling import null_count, distinct_count, data_type
+
+# These are automatically cached when DataProfileManager is initialized
+nulls = null_count(df["column"])
+```
+
+### Importing Pre-computed Profiles
+
+You can import pre-computed data profiles (from external tools like HyFD, CFDFinder, etc.) via the data loader config:
+
+```json
+{
+  "loader": "CSV",
+  "name": "Adult",
+  "file_name": "adult.csv",
+  "data_profiles": {
+    "fd": {
+      "source": "hyfd",
+      "file": "outputs/adult_hyfd.txt"
+    },
+    "null_count": {
+      "source": "manual",
+      "values": [
+        {"column": "age", "value": 0},
+        {"column": "workclass", "value": 1836}
+      ]
+    }
+  }
+}
+```
+
+For complete documentation of all supported import formats, see [Data Profile Import Formats](docs/DATA_PROFILE_IMPORT_FORMATS.md).
 
