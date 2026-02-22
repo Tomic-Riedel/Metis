@@ -14,7 +14,7 @@ def register_models(results_table_name: str):
         __table_args__ = {"extend_existing": True}
 
         id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
-        mes_time: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+        timestamp: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
         dq_dimension: Mapped[str]
         dq_metric: Mapped[str]
         dq_granularity: Mapped[str]

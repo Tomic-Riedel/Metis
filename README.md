@@ -44,7 +44,7 @@ Examples: `completeness_NullRatio`, `minimality_DuplicateCount`
 class DQResult:
     def __init__(
         self,
-        mesTime: pd.Timestamp,
+        timestamp: pd.Timestamp,
         DQvalue: float,
         DQdimension: str,
         DQmetric: str,
@@ -57,7 +57,7 @@ class DQResult:
 ````
 
 To create a new instance of DQResult, one needs to provide at least the following arguments:
-- **mesTime: pd.Timestamp**: The time at which a result was assessed.
+- **timestamp: pd.Timestamp**: The time at which a result was assessed.
 - **DQvalue: float**: The result of the assessment. This currently only supports quantitative assessments.
 - **DQdimension: str**: The name of the data quality dimension that was assessed e.g. completeness, accuracy, etc.
 - **DQmetric: str**: The name of the specific metric inside the given dimension that was assessed.
