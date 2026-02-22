@@ -5,6 +5,8 @@ import pandas as pd
 
 from metis.loader.csv_loader import CSVLoader
 from metis.metric import Metric
+from metis.profiling.data_profile_manager import DataProfileManager
+from metis.profiling.importers import get_importer
 from metis.utils.data_config import DataConfig
 from metis.utils.result import DQResult
 from metis.writer.console_writer import ConsoleWriter
@@ -32,6 +34,11 @@ class DQOrchestrator:
             elif writer_config["writer_name"] == "postgres":
                 self.writer = PostgresWriter(writer_config)
 
+        # Initialize profile cache using the same DB as the writer.
+        # No caching if no DB writer is configured.
+        if hasattr(self.writer, "engine"):
+            DataProfileManager.initialize(self.writer.engine)
+
     def load(self, data_loader_configs: List[str]) -> None:
         for config_path in data_loader_configs:
             with open(config_path, "r") as f:
@@ -49,6 +56,12 @@ class DQOrchestrator:
                         reference_config.file_name = config.reference_file_name
                         reference_dataframe = loader.load(reference_config)
                         self.reference_dataframes[config.name] = reference_dataframe
+
+                    # Import pre-computed data profiles
+                    if config.data_profiles:
+                        self._import_data_profiles(
+                            config.data_profiles, config_path, config.name
+                        )
                 else:
                     raise ValueError(
                         f"Unsupported loader type: {config_data.get('loader', None)}"
@@ -63,6 +76,11 @@ class DQOrchestrator:
                 raise ValueError(f"Metric {metric} is not registered.")
             metric_instance: Metric = metric_class()
             for df_name, df in self.dataframes.items():
+                # Set profiling context so cached functions know the active dataset.
+                if DataProfileManager.is_initialized():
+                    DataProfileManager.get_instance().set_context(
+                        dataset=self.data_paths[df_name], table=df_name
+                    )
                 incomplete_metric_results = metric_instance.assess(
                     data=df,
                     reference=self.reference_dataframes.get(df_name),
@@ -77,3 +95,29 @@ class DQOrchestrator:
 
     def get_dq_result(self, query: str) -> List[DQResult]:
         return []
+
+    def _import_data_profiles(
+        self, profiles: dict, dataset: str, table: str
+    ) -> None:
+        """Import pre-computed data profiles from config.
+
+        Args:
+            profiles: Dict mapping task_name -> {source, file|values}
+            dataset: Dataset identifier (config path)
+            table: Table name
+        """
+        if not DataProfileManager.is_initialized():
+            return
+
+        manager = DataProfileManager.get_instance()
+
+        for task_name, task_config in profiles.items():
+            try:
+                importer = get_importer(task_name)
+                count = importer.import_to_manager(
+                    task_config, manager, dataset, table
+                )
+            except KeyError as e:
+                raise ValueError(
+                    f"Unknown data profile task: {task_name}"
+                ) from e
