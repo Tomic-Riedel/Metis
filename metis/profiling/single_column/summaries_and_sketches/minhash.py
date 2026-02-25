@@ -5,4 +5,4 @@ from metis.utils.data_profiling.single_column.summaries_and_sketches.minhash imp
 )
 
 minhash_signature = cached(_minhash_signature)
-estimate_jaccard_from_minhash = cached(_estimate_jaccard_from_minhash)
+estimate_jaccard_from_minhash = _estimate_jaccard_from_minhash
