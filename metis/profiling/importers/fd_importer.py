@@ -42,22 +42,25 @@ class FDImporter(BaseImporter):
 
         fds: List[Dict[str, Any]] = []
 
-        # Try CFDFinder first (has # pattern)
-        for match in self.CFD_PATTERN.finditer(content):
-            lhs_raw, rhs_raw, pattern_tableau = match.groups()
-            lhs = self._parse_columns(lhs_raw, table_name)
-            rhs = self._parse_column(rhs_raw, table_name)
-            fds.append(
-                {
-                    "column_names": sorted(lhs + [rhs]),
-                    "value": {"lhs": lhs, "rhs": rhs},
-                    "task_config": {"pattern_tableau": pattern_tableau},
-                }
-            )
+        for line in content.splitlines():
+            # Try CFDFinder first (more specific: requires #)
+            match = self.CFD_PATTERN.search(line)
+            if match:
+                lhs_raw, rhs_raw, pattern_tableau = match.groups()
+                lhs = self._parse_columns(lhs_raw, table_name)
+                rhs = self._parse_column(rhs_raw, table_name)
+                fds.append(
+                    {
+                        "column_names": sorted(lhs + [rhs]),
+                        "value": {"lhs": lhs, "rhs": rhs},
+                        "task_config": {"pattern_tableau": pattern_tableau},
+                    }
+                )
+                continue
 
-        # If no CFD matches, try HyFD/AIDFD
-        if not fds:
-            for match in self.HYFD_PATTERN.finditer(content):
+            # Fall back to HyFD/AIDFD
+            match = self.HYFD_PATTERN.search(line)
+            if match:
                 lhs_raw, rhs_raw = match.groups()
                 lhs = self._parse_columns(lhs_raw, table_name)
                 rhs = self._parse_column(rhs_raw, table_name)
