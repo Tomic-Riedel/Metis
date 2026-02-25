@@ -159,20 +159,39 @@ class DataProfileManager:
 
         serialized, result_type = self._serialize(value)
 
-        profile = DataProfile(
-            dataset=ds,
-            table_name=tbl,
-            column_names=column_names,
-            dp_task_name=dp_task_name,
-            task_config=task_config,
-            profile_type=profile_type,
-            dp_result_value=serialized,
-            result_type=result_type,
-            source=source,
-        )
-
         with Session(self._engine) as session:
-            session.add(profile)
+            # Find existing row with same logical key
+            stmt = (
+                select(DataProfile)
+                .where(DataProfile.dataset == ds)
+                .where(DataProfile.table_name == tbl)
+                .where(DataProfile.dp_task_name == dp_task_name)
+            )
+            existing = None
+            for row in session.execute(stmt).scalars():
+                if sorted(row.column_names) == sorted(column_names):
+                    cfg = row.task_config or {}
+                    if cfg == (task_config or {}):
+                        existing = row
+                        break
+
+            if existing is not None:
+                existing.dp_result_value = serialized
+                existing.result_type = result_type
+                existing.profile_type = profile_type
+                existing.source = source
+            else:
+                session.add(DataProfile(
+                    dataset=ds,
+                    table_name=tbl,
+                    column_names=column_names,
+                    dp_task_name=dp_task_name,
+                    task_config=task_config,
+                    profile_type=profile_type,
+                    dp_result_value=serialized,
+                    result_type=result_type,
+                    source=source,
+                ))
             session.commit()
 
         # update in-memory cache
