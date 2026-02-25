@@ -48,6 +48,12 @@ def cached(fn: Callable) -> Callable:
         else:
             column_names = [str(c) for c in data.columns]
 
+        # Include column names from any extra Series args (e.g. jaccard's column2)
+        # so that the cache key distinguishes different column pairs.
+        for arg in args:
+            if isinstance(arg, pd.Series) and arg.name is not None:
+                column_names.append(str(arg.name))
+
         # Build optional config dict from extra arguments (if any).
         task_config = _build_config(fn, args, kwargs) or None
 
@@ -84,6 +90,8 @@ def _build_config(fn: Callable, args: tuple, kwargs: dict) -> dict | None:
 
     config: dict = {}
     for i, val in enumerate(args):
+        if isinstance(val, pd.Series):
+            continue
         if i < len(params):
             config[params[i]] = val
     config.update(kwargs)
