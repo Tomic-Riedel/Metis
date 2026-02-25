@@ -309,6 +309,31 @@ class DataProfileManager:
 
         if isinstance(value, pd.Series):
             return {"v": to_json_safe(value.to_dict())}, "series"
+
+        # MinHash support (for minhash_signature results)
+        from datasketch import MinHash as _MinHash
+
+        if isinstance(value, _MinHash):
+            return {
+                "v": {
+                    "hashvalues": value.hashvalues.tolist(),
+                    "num_perm": int(value.num_perm),
+                    "seed": int(value.seed),
+                }
+            }, "minhash"
+
+        if isinstance(value, dict) and value and isinstance(next(iter(value.values())), _MinHash):
+            return {
+                "v": {
+                    k: {
+                        "hashvalues": v.hashvalues.tolist(),
+                        "num_perm": int(v.num_perm),
+                        "seed": int(v.seed),
+                    }
+                    for k, v in value.items()
+                }
+            }, "minhash_dict"
+
         if isinstance(value, dict):
             return {"v": to_json_safe(value)}, "dict"
         if isinstance(value, list):
@@ -325,4 +350,23 @@ class DataProfileManager:
         raw = payload.get("v")
         if result_type == "series":
             return pd.Series(raw)
+        if result_type == "minhash":
+            from datasketch import MinHash as _MinHash
+            import numpy as np
+            return _MinHash(
+                num_perm=raw["num_perm"],
+                seed=raw["seed"],
+                hashvalues=np.array(raw["hashvalues"], dtype=np.uint64),
+            )
+        if result_type == "minhash_dict":
+            from datasketch import MinHash as _MinHash
+            import numpy as np
+            return {
+                k: _MinHash(
+                    num_perm=v["num_perm"],
+                    seed=v["seed"],
+                    hashvalues=np.array(v["hashvalues"], dtype=np.uint64),
+                )
+                for k, v in raw.items()
+            }
         return raw
